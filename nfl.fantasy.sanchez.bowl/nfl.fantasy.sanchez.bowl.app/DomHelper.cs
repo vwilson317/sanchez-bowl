@@ -17,7 +17,7 @@ namespace nfl.fantasy.sanchez.bowl.app
             this.httpClient = httpClient;
         }
 
-        public async Task LoadPage(string loginUrl){
+        public async Task LoadPageAsync(string loginUrl){
             using(httpClient){
                 var response = await httpClient.GetAsync(loginUrl);
                 if(response.StatusCode == HttpStatusCode.OK){
@@ -26,21 +26,41 @@ namespace nfl.fantasy.sanchez.bowl.app
                     var doc = new HtmlDocument();
                     doc.Load(stream);
 
-                    var xpathQuery = "//tbody/tr[not(contains(@class,'bench'))]";
+                    var xpathQuery = "//tbody//tr";
                     var rosterNodes = doc.DocumentNode.SelectNodes(xpathQuery);
 
-                    var nodes = rosterNodes.Nodes();
-                    var playerInfoCell = nodes.Select(n => n.SelectNodes("//td[@class='playerNameAndInfo']")).ToList();//.Select(td => td.First().I
+                    var palyerInfoXpathQuery = "//td[@class='playerNameAndInfo']";
+                    var positionXpathQuery = "//em";
+                    var nameXpathQuery = "//a[1]";
+                    var scoreXpathQuery = "//td[@class='stat statTotal numeric last']/span";
+                    var playerInfoCells = rosterNodes.Select(n => n.SelectSingleNode(palyerInfoXpathQuery)).ToList();//.Select(td => td.First().I
 
-                    var links = playerInfoCell.Select(x => x.Nodes());
+                    var names = playerInfoCells.Select(x => new PlayInfo
+                    {
+                        Name = GetNodeInnerText(x, nameXpathQuery),
+                        Position = GetNodeInnerText(x, positionXpathQuery),
+                        Score = GetNodeInnerText(x, scoreXpathQuery)
+                    }).ToList();
                 }
             }
         }
+
+        private string GetNodeInnerText(HtmlNode node, string xpathQuery){
+            var thisNode = node.SelectSingleNode(xpathQuery);
+            var txt = thisNode.InnerText;
+            return txt;
+        }
+    }
+
+    public class PlayInfo{
+        public string Name { get; set; }
+        public string Position { get; set; }
+        public string Score { get; set; }
     }
 
     public interface IDomHelper
     {
-        Task LoadPage(string loginUrl);
+        Task LoadPageAsync(string loginUrl);
     }
 
     public class HttpWrapper:IHttpWrapper{

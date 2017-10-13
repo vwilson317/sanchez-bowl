@@ -28,7 +28,7 @@ namespace nfl.fantasy.sanchez.bowl.app
 
     public class ProgramLogic : IProgramLogic{
         private IDomHelper _domHelper;
-        private const string _leagueUrl = "http://fantasy.nfl.com/league/448915/team/";
+        public const string _leagueUrl = "http://fantasy.nfl.com/league/448915/team/";
 
         public ProgramLogic(IDomHelper domHelper){
             _domHelper = domHelper;
@@ -36,7 +36,7 @@ namespace nfl.fantasy.sanchez.bowl.app
 
         public async Task MainAsync(){
             var teamId = Teams.Team1.GetHashCode();
-            await _domHelper.LoadPage($"{_leagueUrl}{teamId}");
+            await _domHelper.LoadPageAsync($"{_leagueUrl}{teamId}");
         }
     }
 
