@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
+
 namespace nfl.fantasy.sanchez.bowl.app
 {
     public class DomHelper : IDomHelper
@@ -19,9 +22,17 @@ namespace nfl.fantasy.sanchez.bowl.app
                 var response = await httpClient.GetAsync(loginUrl);
                 if(response.StatusCode == HttpStatusCode.OK){
                     var stream = await response.Content.ReadAsStreamAsync();
-                    using (var streamReader = new StreamReader(stream)){
-                        var dom = await streamReader.ReadToEndAsync();
-                    }
+
+                    var doc = new HtmlDocument();
+                    doc.Load(stream);
+
+                    var xpathQuery = "//tbody/tr[not(contains(@class,'bench'))]";
+                    var rosterNodes = doc.DocumentNode.SelectNodes(xpathQuery);
+
+                    var nodes = rosterNodes.Nodes();
+                    var playerInfoCell = nodes.Select(n => n.SelectNodes("//td[@class='playerNameAndInfo']")).ToList();//.Select(td => td.First().I
+
+                    var links = playerInfoCell.Select(x => x.Nodes());
                 }
             }
         }

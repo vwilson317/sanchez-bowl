@@ -15,9 +15,9 @@ namespace nfl.fantasy.sanchez.bowl.app.Pages
             this.programLogic = programLogic;
         }
 
-        public void OnGet()
+        public async Task OnGet()
         {
-            programLogic.MainAsync();
+            await programLogic.MainAsync();
         }
     }
 }
