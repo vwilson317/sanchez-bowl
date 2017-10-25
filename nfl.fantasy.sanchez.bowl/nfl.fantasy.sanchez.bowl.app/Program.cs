@@ -29,20 +29,23 @@ namespace nfl.fantasy.sanchez.bowl.app
     public class ProgramLogic : IProgramLogic{
         private IDomHelper _domHelper;
         public const string _leagueUrl = "http://fantasy.nfl.com/league/448915/team/";
+        public const string _gameCenter = "/gamecenter?week=";
+        public const int _week = 8;
 
         public ProgramLogic(IDomHelper domHelper){
             _domHelper = domHelper;
         }
 
-        public async Task MainAsync(){
+        public async Task<IEnumerable<PlayInfo>> MainAsync(){
             var teamId = Teams.Team1.GetHashCode();
-            await _domHelper.LoadPageAsync($"{_leagueUrl}{teamId}");
+            var playerInfo = await _domHelper.LoadPageAsync($"{_leagueUrl}{teamId}{_gameCenter}{_week}");
+            return playerInfo;
         }
     }
 
     public interface IProgramLogic
     {
-        Task MainAsync();
+        Task<IEnumerable<PlayInfo>> MainAsync();
     }
 
     //TODO: configure team names dyamically

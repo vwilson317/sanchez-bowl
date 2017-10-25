@@ -9,6 +9,7 @@ namespace nfl.fantasy.sanchez.bowl.app.Pages
 {
     public class IndexModel : PageModel
     {
+        public IEnumerable<PlayInfo> PlayerInfos { get; set; }
         readonly IProgramLogic programLogic;
 
         public IndexModel(IProgramLogic programLogic){
@@ -17,7 +18,8 @@ namespace nfl.fantasy.sanchez.bowl.app.Pages
 
         public async Task OnGet()
         {
-            await programLogic.MainAsync();
+            var playerInfo = await programLogic.MainAsync();
+            PlayerInfos = playerInfo;
         }
     }
 }
