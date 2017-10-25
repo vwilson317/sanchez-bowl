@@ -3,27 +3,70 @@ body {
     padding-bottom: 20px
 }
 
+
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
-    padding-left: 15px;
+    margin-top: 2em;
     padding-right: 15px
 }
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4
+
+.navbar {
+    background-color: #013369;
+    border-color: #013369;
+    color: white;
 }
 
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%
+.navbar-brand:hover {
+    color: gainsboro;
 }
 
-/* QR code generator */
-#qrCode {
-    margin: 15px
+.navbar .container {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.nfl-logo {
+    background-image: url(https://static.nfl.com/static/content/public/static/wildcat/assets/img/application-shell/shield/default.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: inline-block;
+    height: 48px;
+    justify-content: center;
+    width: 48px;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    -webkit-box-pack: center;
+    float: left;
+}
+
+.butt-fumble-img {
+    margin-top: 1.5em;
+    background-image: url('../images/butt-fumble.jpg');
+    height: 667px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.player-row li{
+    display: block;
+    width: 33%;
+    float: left;
+}
+
+.total-label {
+    text-align: right;
+}
+
+.bench-label {
+    margin: 0 2em;
+    background-color: gainsboro;
+}
+.bench-container {
+    border: 2px black dashed;    
 }
 
 /* Hide/rearrange for smaller screens */

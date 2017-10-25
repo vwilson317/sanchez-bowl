@@ -1,0 +1,7 @@
+﻿@model nfl.fantasy.sanchez.bowl.domain.Team
+<div class="col">
+    <h2>@Model.Name</h2>
+    @await Html.PartialAsync("_teamDetail", Model.Roster.Starters)
+    <h2 class="total-label">Total @Model.TotalScore</h2>
+    @await Html.PartialAsync("_teamDetailBench", Model.Roster.Bench)
+</div>

@@ -1,20 +1,24 @@
 ﻿@page
-@model IndexModel
+@using nfl.fantasy.sanchez.bowl.app.Pages
+@model nfl.fantasy.sanchez.bowl.app.Pages.IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
+<style>
+    .col {
+        display: block;
+        width: 33%;
+        float: left;
+    }
+
+        .col ul {
+            list-style: none;
+        }
+</style>
 
 <div>
-
-    @foreach (var current in Model.PlayerInfos)
-    {
-        <div class="player-row">
-            <ul>
-                <li>@current.Name</li>
-                <li>@current.Position</li>
-                <li>@current.Score</li>
-            </ul>
-
-        </div>
-    }
+    <div class="butt-fumble-img col"></div>
+    @await Html.PartialAsync("_team", Model.TeamOne)
+    @await Html.PartialAsync("_team", Model.TeamTwo)
+    <div class="clearfix"></div>
 </div>

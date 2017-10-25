@@ -1,0 +1,13 @@
+﻿@model IList<nfl.fantasy.sanchez.bowl.domain.PlayerDetails>
+@for (int i = 0; i < Model.Count(); i++)
+{
+    var currentPlayerDetails = Model.ElementAt(i);
+    <div class="player-row">
+        <ul>
+            <li>@currentPlayerDetails.Name </li>
+            <li>@currentPlayerDetails.Position</li>
+            <li>@currentPlayerDetails.Score</li>
+        </ul>
+    </div>
+    <div class="clearfix"></div>
+}

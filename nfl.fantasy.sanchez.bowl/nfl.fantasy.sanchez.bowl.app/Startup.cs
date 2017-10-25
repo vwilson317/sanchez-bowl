@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Autofac;
 using Autofac.Extensions;
+using nfl.fantasy.sanchez.bowl.domain;
 
 namespace nfl.fantasy.sanchez.bowl.app
 {
@@ -29,6 +30,8 @@ namespace nfl.fantasy.sanchez.bowl.app
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.Configure<TeamConfig>(Configuration.GetSection(nameof(TeamConfig)));
         }
 
         // Configure is where you add middleware. This is called after
