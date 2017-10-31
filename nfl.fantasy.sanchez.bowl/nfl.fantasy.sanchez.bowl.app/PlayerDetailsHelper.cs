@@ -8,15 +8,23 @@ namespace nfl.fantasy.sanchez.bowl.app
         private readonly IDomHelper _domHelper;
         public const string LeagueUrl = "http://fantasy.nfl.com/league/448915/team/";
         public const string GameCenter = "/gamecenter?week=";
-        public const int Week = 8;
 
         public PlayerDetailsHelper(IDomHelper domHelper){
             _domHelper = domHelper;
         }
 
-        public async Task<Roster> GetPlayerDetails(TeamIdentifier teamIdentifier){
+        public async Task<Roster> GetPlayerDetails(TeamIdentifier teamIdentifier, byte week, bool previousWeek = false){
             var teamId = teamIdentifier.GetHashCode();
-            var playerInfo = await _domHelper.LoadPlayerDetails($"{LeagueUrl}{teamId}{GameCenter}{Week}");
+            string url = $"{LeagueUrl}{teamId}";
+            if (previousWeek)
+            {
+                url += $"/gamecenter?gameCenterTab=track&trackType=sbs&week={week}";
+            }
+            else
+            {
+                url += $"{GameCenter}{week}";
+            }
+            var playerInfo = await _domHelper.LoadPlayerDetails(url);
             return playerInfo;
         }
     }

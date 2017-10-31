@@ -6,6 +6,6 @@ namespace nfl.fantasy.sanchez.bowl.app
 {
     public interface IPlayerDetailsHelper
     {
-        Task<Roster> GetPlayerDetails(TeamIdentifier teamIdentifier);
+        Task<Roster> GetPlayerDetails(TeamIdentifier teamIdentifier, byte week, bool previousWeek = false);
     }
 }

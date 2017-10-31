@@ -1,5 +1,16 @@
 ﻿@model System.Collections.Generic.IList<nfl.fantasy.sanchez.bowl.domain.PlayerDetails>
+@{
+    int i = 1;
+}
+@functions
+{
+    public void Add(int i)
+    {
+        i++;
+    }
+}
 <h4>Bench</h4>
-<div class="bench-container">
+<div id="@i.ToString()-bench"class="bench-container">
+    @{Add(i);}
     @await Html.PartialAsync("_teamDetail", Model)
 </div>

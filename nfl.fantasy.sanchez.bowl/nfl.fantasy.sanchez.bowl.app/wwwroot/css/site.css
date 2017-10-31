@@ -65,8 +65,26 @@ body {
     margin: 0 2em;
     background-color: gainsboro;
 }
+
+.starter-container {
+    cursor: move;
+}
+
 .bench-container {
-    border: 2px black dashed;    
+    border: 2px black dashed;
+    cursor: move;
+}
+
+.col {
+    display: block;
+    width: 33%;
+    float: left;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.col ul {
+    list-style: none;
 }
 
 /* Hide/rearrange for smaller screens */
