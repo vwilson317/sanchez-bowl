@@ -1,7 +1,4 @@
-﻿using System.Collections.Specialized;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using nfl.fantasy.sanchez.bowl.domain;
@@ -26,12 +23,13 @@ namespace nfl.fantasy.sanchez.bowl.app.Pages
         {
             var queryStr = Request.QueryString.Value;
             var queryParamObj = RequestQueryStrParser<QueryParamObj>.Parse(queryStr);
+            var week = queryParamObj.Week;
             TeamOne = new Team(TeamIdentifier.Micheal);
-            var rosterOne = await _playerDetailsHelper.GetPlayerDetails(TeamOne.TeamIdentifierIdentifier, queryParamObj.Week, queryParamObj.Completed);
+            var rosterOne = await _playerDetailsHelper.GetPlayerDetails(TeamOne.TeamIdentifierIdentifier, week);
             TeamOne.Roster = rosterOne;
 
             TeamTwo = new Team(TeamIdentifier.Dustin);
-            var rosterTwo = await _playerDetailsHelper.GetPlayerDetails(TeamTwo.TeamIdentifierIdentifier, queryParamObj.Week, queryParamObj.Completed);
+            var rosterTwo = await _playerDetailsHelper.GetPlayerDetails(TeamTwo.TeamIdentifierIdentifier, week);
             TeamTwo.Roster = rosterTwo;
         }
     }
