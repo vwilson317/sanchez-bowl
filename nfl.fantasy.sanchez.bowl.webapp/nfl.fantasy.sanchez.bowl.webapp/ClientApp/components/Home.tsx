@@ -12,7 +12,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
         super();
         this.state = { teams: [], loading: true };
 
-        fetch('api/SampleData/Teams')
+        fetch('api/teams/12/week/9')
             .then(response => response.json() as Promise<Team>)
             .then(data => {
                 this.setState({ teams: [data], loading: false });
@@ -29,12 +29,12 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
     private static renderTeam(team: Team) {
         return <div>
                    <p>{team.name}</p>
-                   <p>{team.totalscore}</p>
+                   <p>{team.totalScore}</p>
                </div>;
     }
 }
 
 interface Team {
     name: string;
-    totalscore: number;
+    totalScore: number;
 }
