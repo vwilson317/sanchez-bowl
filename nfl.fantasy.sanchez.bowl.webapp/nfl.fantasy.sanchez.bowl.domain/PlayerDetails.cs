@@ -12,14 +12,4 @@ namespace nfl.fantasy.sanchez.bowl.domain
 
         public bool IsStarter { get; set; }
     }
-
-    public enum Positions : byte
-    {
-        QB,
-        RB,
-        WR,
-        TE,
-        K,
-        DEF
-    }
 }

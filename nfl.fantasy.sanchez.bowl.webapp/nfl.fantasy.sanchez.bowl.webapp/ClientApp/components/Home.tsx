@@ -30,6 +30,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
         return <div>
                    <p>{team.name}</p>
                    <p>{team.totalScore}</p>
+                   <p>{team.roster.count}</p>
                </div>;
     }
 }
@@ -37,4 +38,30 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
 interface Team {
     name: string;
     totalScore: number;
+    roster: Roster; 
 }
+
+interface Roster {
+//    public IList<PlayerDetails> Starters { get; }
+//public IList < PlayerDetails > Bench { get; }
+
+//public int Count => Starters.Count + Bench.Count;
+    starters: PlayerDetails[];
+    bench: PlayerDetails[];
+    count: number;
+}
+
+interface PlayerDetails {
+//    public string Name { get; set; }
+//public string Position { get; set; }
+//public double Score { get; set; }
+
+//public Positions PositionType => (Positions) Enum.Parse(typeof (Positions), Position ?.Split('-')[0].Trim());
+
+//public bool IsStarter { get; set; }
+    name: string;
+    position: string;
+    score: number;
+    positionType: number;
+    isStarter: boolean;
+} 

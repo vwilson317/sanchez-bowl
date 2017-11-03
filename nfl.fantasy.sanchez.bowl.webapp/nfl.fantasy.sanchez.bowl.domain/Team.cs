@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace nfl.fantasy.sanchez.bowl.domain
@@ -16,18 +15,5 @@ namespace nfl.fantasy.sanchez.bowl.domain
         public TeamIdentifier TeamIdentifierIdentifier { get; set; }
 
         public double TotalScore => Roster.Starters.Sum(p => p.Score);
-    }
-
-    public class Roster
-    {
-        public Roster()
-        {
-            Starters = new List<PlayerDetails>();
-            Bench = new List<PlayerDetails>();
-        }
-        public IList<PlayerDetails> Starters { get; }
-        public IList<PlayerDetails> Bench { get; }
-
-        public int Count => Starters.Count + Bench.Count;
     }
 }
