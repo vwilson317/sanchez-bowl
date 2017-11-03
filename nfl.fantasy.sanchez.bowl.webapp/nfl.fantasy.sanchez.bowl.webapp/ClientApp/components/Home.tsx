@@ -31,6 +31,11 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
                    <p>{team.name}</p>
                    <p>{team.totalScore}</p>
                    <p>{team.roster.count}</p>
+                   {team.roster.starters.map(s => {
+                <div>{s.name} {s.position} {s.positionType} {s.score}</div>
+
+                       })
+                   }
                </div>;
     }
 }
