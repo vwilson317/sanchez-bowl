@@ -41,29 +41,6 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
 
         return startersList;
     }
-
-    private static render2(playerDetails: PlayerDetails[]) {
-        return <table className='table'>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {playerDetails.map(p =>
-                    <tr key={p.name}>
-                        <td>{p.name}</td>
-                        <td>{p.score}</td>
-                        <td>{p.position}</td>
-                        <td>{p.positionType}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
-    }
 }
 
 interface Team {
