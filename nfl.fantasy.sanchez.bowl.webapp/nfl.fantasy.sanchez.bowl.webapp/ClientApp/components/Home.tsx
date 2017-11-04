@@ -22,43 +22,74 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
     public render() {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : Home.renderTeam(this.state.teams[0]);
+            : Home.renderTeam(this.state.teams[0].roster.starters);
+        //Home.render2(this.state.teams[0].roster.starters)
+
         return contents;
     }
 
-    private static renderTeam(team: Team) {
-        return <div>
-                   <p>{team.name}</p>
-                   <p>{team.totalScore}</p>
-                   <p>{team.roster.count}</p>
-               </div>;
+    private static renderTeam(playerDetails: PlayerDetails[]) {
+        let startersList = <div>
+            {
+                playerDetails.map((p) =>
+                    <div key={p.name}>
+                        <div>{p.name} {p.position} {p.score}</div>
+                    </div>
+                )
+            };
+        </div>;
+
+        return startersList;
+    }
+
+    private static render2(playerDetails: PlayerDetails[]) {
+        return <table className='table'>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Temp. (C)</th>
+                    <th>Temp. (F)</th>
+                    <th>Summary</th>
+                </tr>
+            </thead>
+            <tbody>
+                {playerDetails.map(p =>
+                    <tr key={p.name}>
+                        <td>{p.name}</td>
+                        <td>{p.score}</td>
+                        <td>{p.position}</td>
+                        <td>{p.positionType}</td>
+                    </tr>
+                )}
+            </tbody>
+        </table>;
     }
 }
 
 interface Team {
     name: string;
     totalScore: number;
-    roster: Roster; 
+    roster: Roster;
 }
 
 interface Roster {
-//    public IList<PlayerDetails> Starters { get; }
-//public IList < PlayerDetails > Bench { get; }
+    //    public IList<PlayerDetails> Starters { get; }
+    //public IList < PlayerDetails > Bench { get; }
 
-//public int Count => Starters.Count + Bench.Count;
+    //public int Count => Starters.Count + Bench.Count;
     starters: PlayerDetails[];
     bench: PlayerDetails[];
     count: number;
 }
 
 interface PlayerDetails {
-//    public string Name { get; set; }
-//public string Position { get; set; }
-//public double Score { get; set; }
+    //    public string Name { get; set; }
+    //public string Position { get; set; }
+    //public double Score { get; set; }
 
-//public Positions PositionType => (Positions) Enum.Parse(typeof (Positions), Position ?.Split('-')[0].Trim());
+    //public Positions PositionType => (Positions) Enum.Parse(typeof (Positions), Position ?.Split('-')[0].Trim());
 
-//public bool IsStarter { get; set; }
+    //public bool IsStarter { get; set; }
     name: string;
     position: string;
     score: number;
