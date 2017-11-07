@@ -43,17 +43,11 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
         if (playerSelected) {
             var currentId = this.state.selectedPlayer!.teamId;
             var thisTeam = [this.state.teamOne, this.state.teamTwo].filter(team => team!.id === currentId)[0] as ITeam;
-            var unionArray = thisTeam.roster.starters.concat(thisTeam.roster.bench);
-            for (let i = 0; i < unionArray.length; i++) {
-                var currentPlayer = unionArray[i];
-                if (currentPlayer.name === this.state.selectedPlayer!.name) {
-                    unionArray[i] = playerDetail;
-                }
-                if (currentPlayer.name === playerDetail.name) {
-                    unionArray[i] = this.state.selectedPlayer as IPlayerDetail;
-                }
-            }
-            console.log('roster', unionArray);
+            var roster = thisTeam.roster;
+            this.swapPlayers(roster.starters, playerDetail);
+            this.swapPlayers(roster.bench, playerDetail);
+
+            console.log('roster', thisTeam);
             if (thisTeam.id === this.state.teamOne!.id) {
                 console.log('teamOne after', thisTeam);
                 this.setState({ teamOne: thisTeam as (ITeam), selectedPlayer: null });
@@ -64,6 +58,18 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
         }
         else {
             this.setState({ selectedPlayer: playerDetail });
+        }
+    }
+
+    private swapPlayers(playerDetails: IPlayerDetail[], clickedPlayerDetails: IPlayerDetail) {
+        for (let i = 0; i < playerDetails.length; i++) {
+            var currentPlayer = playerDetails[i];
+            if (currentPlayer.name === this.state.selectedPlayer!.name) {
+                playerDetails[i] = clickedPlayerDetails;
+            }
+            if (currentPlayer.name === clickedPlayerDetails.name) {
+                playerDetails[i] = this.state.selectedPlayer as IPlayerDetail;
+            }
         }
     }
 
