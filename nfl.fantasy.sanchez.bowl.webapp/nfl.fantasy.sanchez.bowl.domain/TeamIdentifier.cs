@@ -1,7 +1,7 @@
 ﻿namespace nfl.fantasy.sanchez.bowl.domain
 {
     //TODO: configure team names dyamically
-    public enum TeamIdentifier : uint
+    public enum TeamIdentifier : byte
     {
         NoTeam = 0,
         Vincent = 1,

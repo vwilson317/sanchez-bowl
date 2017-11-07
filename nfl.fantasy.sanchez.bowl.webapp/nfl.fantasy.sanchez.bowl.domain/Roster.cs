@@ -9,8 +9,8 @@ namespace nfl.fantasy.sanchez.bowl.domain
             Starters = new List<PlayerDetails>();
             Bench = new List<PlayerDetails>();
         }
-        public IList<PlayerDetails> Starters { get; }
-        public IList<PlayerDetails> Bench { get; }
+        public List<PlayerDetails> Starters { get; }
+        public List<PlayerDetails> Bench { get; }
 
         public int Count => Starters.Count + Bench.Count;
     }

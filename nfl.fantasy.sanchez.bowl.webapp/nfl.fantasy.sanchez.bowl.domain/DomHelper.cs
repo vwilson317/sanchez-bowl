@@ -38,7 +38,7 @@ namespace nfl.fantasy.sanchez.bowl.domain
                     {
                         Name = GetNodeInnerText(currentPlayInfoCell, (n) => n.Descendants().FirstOrDefault(d => d.Name == "a")),
                         Position = GetNodeInnerText(currentPlayInfoCell, (n) => n.Descendants().FirstOrDefault(d => d.Name == "em")).ToUpper(),
-                        Score = double.Parse(GetNodeInnerText(rosterNodes[i], (n) => n.Descendants().LastOrDefault()))
+                        Score = double.Parse(GetNodeInnerText(rosterNodes[i], (n) => n.Descendants().LastOrDefault())),
                     };
 
                     if (i < _teamConfigAccessor.StartersCount)

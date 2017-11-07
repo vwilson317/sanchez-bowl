@@ -11,5 +11,6 @@ namespace nfl.fantasy.sanchez.bowl.domain
         public Positions PositionType => (Positions) Enum.Parse(typeof(Positions), Position?.Split('-')[0].Trim());
 
         public bool IsStarter { get; set; }
+        public byte TeamId { get; set; }
     }
 }

@@ -31,6 +31,10 @@
     border: 2px dashed black;
 }
 
+.selectable {
+    background-color: #00ffff;
+}
+
 @media (max-width: 767px) {
     /* On small screens, the nav menu spans the full width of the screen. Leave a space for it. */
     body {
