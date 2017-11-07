@@ -6,42 +6,61 @@ import * as queryStr from 'query-string';
 import * as classNames from 'classnames';
 
 
-interface HomeState {
-    teams: Team[];
+interface IHomeState {
+    teamOne: ITeam | null;
+    teamTwo: ITeam | null;
     loading: boolean;
-    selectedPlayer: PlayerDetail | null;
+    selectedPlayer: IPlayerDetail | null;
 }
 
-export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
+export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
     constructor(props: any) {
         super();
-        this.state = { teams: [], loading: true, selectedPlayer: null };
-        var teams = [] as Team[];
+        this.state = { teamOne: null, teamTwo: null, loading: true, selectedPlayer: null };
+        var teams = [] as ITeam[];
         let parsedParams = queryStr.parse(props.location.search);
-        let teamIds = parsedParams.teams.split(",");
-        fetch('api/teams/' + teamIds[0] + '/week/9')
-            .then(response => response.json() as Promise<Team>)
-            .then(data => {
-                teams.push(data);
-                fetch('api/teams/' + teamIds[1] + '/week/9')
-                    .then(response => response.json() as Promise<Team>)
-                    .then(data => {
-                        teams.push(data);
-                        this.setState({ teams: teams, loading: false });
-                    });
-            });
+        if (parsedParams.teams !== undefined) {
+            let teamIds = parsedParams.teams.split(",");
+            fetch('api/teams/' + teamIds[0] + '/week/9')
+                .then(response => response.json() as Promise<ITeam>)
+                .then(data => {
+                    teams.push(data);
+                    fetch('api/teams/' + teamIds[1] + '/week/9')
+                        .then(response => response.json() as Promise<ITeam>)
+                        .then(data => {
+                            teams.push(data);
+                            this.setState({ teamOne: teams[0], teamTwo: teams[1], loading: false });
+                        });
+                });
+        }
     }
 
-    public playerOnClick(playerDetail: PlayerDetail, e: Event): void {
+    public playerOnClick(playerDetail: IPlayerDetail, e: Event): void {
         console.log("something was clicked");
 
         //doesn't resolve this is done
         let playerSelected = this.state.selectedPlayer !== null;
         if (playerSelected) {
-            //var playerRowDomElements = document.getElementsByClassName("player-row");
-            //for (let currentDomEle of playerRowDomElements) {
-            //    currentDomEle.addClass("selectable");
-            //}
+            var currentId = this.state.selectedPlayer!.teamId;
+            var thisTeam = [this.state.teamOne, this.state.teamTwo].filter(team => team!.id === currentId)[0] as ITeam;
+            var unionArray = thisTeam.roster.starters.concat(thisTeam.roster.bench);
+            for (let i = 0; i < unionArray.length; i++) {
+                var currentPlayer = unionArray[i];
+                if (currentPlayer.name === this.state.selectedPlayer!.name) {
+                    unionArray[i] = playerDetail;
+                }
+                if (currentPlayer.name === playerDetail.name) {
+                    unionArray[i] = this.state.selectedPlayer as IPlayerDetail;
+                }
+            }
+            console.log('roster', unionArray);
+            if (thisTeam.id === this.state.teamOne!.id) {
+                console.log('teamOne after', thisTeam);
+                this.setState({ teamOne: thisTeam as (ITeam), selectedPlayer: null });
+
+            } else if (thisTeam.id === this.state.teamTwo!.id){
+                this.setState({ teamTwo: thisTeam as (ITeam), selectedPlayer: null });
+            }
         }
         else {
             this.setState({ selectedPlayer: playerDetail });
@@ -51,12 +70,12 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
     public render() {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : this.renderTeams(this.state.teams);
+            : this.renderTeams([this.state.teamOne as ITeam, this.state.teamTwo as ITeam]);
 
         return contents;
     }
 
-    private renderTeams(teams: Team[]) {
+    private renderTeams(teams: ITeam[]) {
         return <div id="content">
             {teams.map((t, idx) =>
                 <div id={idx + "-team"} key={t.name} className="team-container">
@@ -73,12 +92,12 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
         </div>
     }
 
-    private renderPlayerDetails(playerDetails: PlayerDetail[]) {
+    private renderPlayerDetails(playerDetails: IPlayerDetail[]) {
         let startersList = <div>
             {
                 playerDetails.map((p) =>
                     <div onClick={this.playerOnClick.bind(this, p)} className={this.addClass(p)}>
-                        <PlayerRow key={p.name} playerDetail={p}  />
+                        <PlayerRow key={p.name} playerDetail={p} />
                     </div>
                 )
             }
@@ -87,12 +106,12 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
         return startersList;
     }
 
-    private addClass(playerDetail: PlayerDetail) {
+    private addClass(playerDetail: IPlayerDetail) {
         let classObj = { selectable: false };
         if (this.state.selectedPlayer !== null) {
             var thisPlayerDetail = this.state.selectedPlayer;
-            let isSelectable = thisPlayerDetail.positionType === playerDetail.positionType
-            && thisPlayerDetail.teamId === playerDetail.teamId;
+            let isSelectable = thisPlayerDetail!.positionType === playerDetail.positionType
+                && thisPlayerDetail!.teamId === playerDetail.teamId;
             classObj.selectable = isSelectable;
         }
 
@@ -100,19 +119,20 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
     }
 }
 
-interface Team {
+interface ITeam {
+    id: number;
     name: string;
     totalScore: number;
-    roster: Roster;
+    roster: IRoster;
 }
 
-interface Roster {
-    starters: PlayerDetail[];
-    bench: PlayerDetail[];
+interface IRoster {
+    starters: IPlayerDetail[];
+    bench: IPlayerDetail[];
     count: number;
 }
 
-export interface PlayerDetail {
+export interface IPlayerDetail {
     name: string;
     position: string;
     score: number;

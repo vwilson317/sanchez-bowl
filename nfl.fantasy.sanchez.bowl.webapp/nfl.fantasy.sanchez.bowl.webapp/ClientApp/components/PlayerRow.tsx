@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PlayerDetail } from './Home';
+import { IPlayerDetail as PlayerDetail } from './Home';
 
 interface PlayerRowProp {
     playerDetail: PlayerDetail,

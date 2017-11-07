@@ -5,23 +5,25 @@ namespace nfl.fantasy.sanchez.bowl.domain
 {
     public class Team
     {
-        public Team(TeamIdentifier teamIdentifierIdentifier)
+        public Team(TeamIdentifier teamIdentifier)
         {
-            TeamIdentifierIdentifier = teamIdentifierIdentifier;
+            TeamIdentifier = teamIdentifier;
         }
 
-        public string Name => Enum.GetName(typeof(TeamIdentifier), TeamIdentifierIdentifier);
+        public byte Id => (byte)TeamIdentifier;
+
+        public string Name => Enum.GetName(typeof(TeamIdentifier), TeamIdentifier);
         private Roster _roster;
         public Roster Roster {
-            get { return _roster; }
+            get => _roster;
             set
             {
-                value.Starters.ForEach(s => s.TeamId = (byte)TeamIdentifierIdentifier);
-                value.Bench.ForEach(s => s.TeamId = (byte)TeamIdentifierIdentifier);
+                value.Starters.ForEach(s => s.TeamId = (byte)TeamIdentifier);
+                value.Bench.ForEach(s => s.TeamId = (byte)TeamIdentifier);
                 _roster = value;
             }
         }
-        public TeamIdentifier TeamIdentifierIdentifier { get; set; }
+        public TeamIdentifier TeamIdentifier { get; set; }
 
         public double TotalScore => Roster.Starters.Sum(p => p.Score);
     }

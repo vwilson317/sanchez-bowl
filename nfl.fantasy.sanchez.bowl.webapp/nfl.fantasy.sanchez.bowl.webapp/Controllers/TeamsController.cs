@@ -21,7 +21,7 @@ namespace nfl.fantasy.sanchez.bowl.webapp.Controllers
         public async Task<Team> Week(TeamIdentifier teamIdentifier, byte weekNum)
         {
             var team = new Team(teamIdentifier);
-            var roster = await _playerDetailsHelper.GetPlayerDetails(team.TeamIdentifierIdentifier, weekNum);
+            var roster = await _playerDetailsHelper.GetPlayerDetails(team.TeamIdentifier, weekNum);
             team.Roster = roster;
             return team;
         }
