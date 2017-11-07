@@ -19,6 +19,18 @@
     z-index: 1;
 }
 
+.team-container {
+    float: left;
+    width: 50%;
+
+    padding: 1em;
+}
+
+.bench-container{
+    margin-top: 1em;
+    border: 2px dashed black;
+}
+
 @media (max-width: 767px) {
     /* On small screens, the nav menu spans the full width of the screen. Leave a space for it. */
     body {

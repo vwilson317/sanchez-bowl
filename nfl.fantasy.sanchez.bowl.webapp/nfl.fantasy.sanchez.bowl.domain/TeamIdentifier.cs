@@ -15,6 +15,6 @@
         Eve = 9,
         Tyler = 10,
         Taylor = 11,
-        Micheal = 12
+        Michael = 12
     }
 }

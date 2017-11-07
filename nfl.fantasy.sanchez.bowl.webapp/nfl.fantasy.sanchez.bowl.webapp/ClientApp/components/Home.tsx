@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import 'isomorphic-fetch';
+import { PlayerRow } from './PlayerRow';
+import * as queryStr from 'query-string';
+
 
 interface HomeState {
     teams: Team[];
@@ -13,27 +16,19 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
         super();
         this.state = { teams: [], loading: true, selectedPlayer: null };
         var teams = [] as Team[];
-        //props.
-        fetch('api/teams/12/week/9')
+        let parsedParams = queryStr.parse(props.location.search);
+        let teamIds = parsedParams.teams.split(",");
+        fetch('api/teams/' + teamIds[0] + '/week/9')
             .then(response => response.json() as Promise<Team>)
             .then(data => {
                 teams.push(data);
-                fetch('api/teams/11/week/9')
+                fetch('api/teams/' + teamIds[1] + '/week/9')
                     .then(response => response.json() as Promise<Team>)
                     .then(data => {
                         teams.push(data);
                         this.setState({ teams: teams, loading: false });
                     });
             });
-
-        //let playerRows = document.getElementsByClassName("player-row");
-        //for (let currentPlayerRow of playerRows) {
-        //    playerRows.item.addEventListener("click", (e:Event) => )
-        //}
-
-        //    public handleOnClick(event: any): void {
-        //    this.setState({ name: "Charles" });
-        //}
     }
 
     public static playerOnClick(event: any): void {
@@ -42,13 +37,10 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
         console.log("something was clicked");
     }
 
-    //public getPosition: function(playerDetail: PlayerDetail) {
-    //}
-
     public render() {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : Home.renderTeams(this.state.teams);//Home.renderPlayerDetails(this.state.teams[0].roster.starters);
+            : Home.renderTeams(this.state.teams);
 
         return contents;
     }
@@ -74,9 +66,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
         let startersList = <div onClick={e => this.playerOnClick(e)}>
             {
                 playerDetails.map((p) =>
-                    <div key={p.name}>
-                        <div>{p.name} {p.position} {p.score}</div>
-                    </div>
+                    <PlayerRow playerDetail={p} />
                 )
             }
         </div>
@@ -92,23 +82,12 @@ interface Team {
 }
 
 interface Roster {
-    //    public IList<PlayerDetails> Starters { get; }
-    //public IList < PlayerDetails > Bench { get; }
-
-    //public int Count => Starters.Count + Bench.Count;
     starters: PlayerDetail[];
     bench: PlayerDetail[];
     count: number;
 }
 
-interface PlayerDetail {
-    //    public string Name { get; set; }
-    //public string Position { get; set; }
-    //public double Score { get; set; }
-
-    //public Positions PositionType => (Positions) Enum.Parse(typeof (Positions), Position ?.Split('-')[0].Trim());
-
-    //public bool IsStarter { get; set; }
+export interface PlayerDetail {
     name: string;
     position: string;
     score: number;
