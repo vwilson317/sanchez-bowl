@@ -61,14 +61,15 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
         }
     }
 
-    private swapPlayers(playerDetails: IPlayerDetail[], clickedPlayerDetails: IPlayerDetail) {
+    private swapPlayers(playerDetails: IPlayerDetail[], clickedPlayerDetail: IPlayerDetail) {
         for (let i = 0; i < playerDetails.length; i++) {
             var currentPlayer = playerDetails[i];
-            if (currentPlayer.name === this.state.selectedPlayer!.name) {
-                playerDetails[i] = clickedPlayerDetails;
+            var selectedPlayer = this.state.selectedPlayer as IPlayerDetail
+            if (currentPlayer.name === selectedPlayer.name && clickedPlayerDetail.positionType === selectedPlayer.positionType) {
+                playerDetails[i] = clickedPlayerDetail;
             }
-            if (currentPlayer.name === clickedPlayerDetails.name) {
-                playerDetails[i] = this.state.selectedPlayer as IPlayerDetail;
+            else if (currentPlayer.name === clickedPlayerDetail.name && clickedPlayerDetail.positionType === selectedPlayer.positionType) {
+                playerDetails[i] = selectedPlayer;
             }
         }
     }
