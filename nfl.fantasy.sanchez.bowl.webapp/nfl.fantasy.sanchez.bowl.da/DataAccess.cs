@@ -1,30 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using LiteDB;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace nfl.fantasy.sanchez.bowl.da
 {
-    public interface IDataAccess<T> where T : class
+    public interface IQueryable
     {
-        Task<T> GetAsync<T>(byte id);
+        byte Id { get; set; }
+    }
+
+    public interface IDataAccess<T> where T : class, new()
+    {
+        Task<T> GetAsync<T>(int id) where T : new();
         Task<IEnumerable<T>> GetAllAysnc<T>();
         Task SaveAsync<T>(T obj);
     }
 
-    public class DataAccess<T> : IDataAccess<T> where T : class
+    public class DataAccess<T> : IDataAccess<T> where T : class, new()
     {
-        public Task<IEnumerable<T1>> GetAllAysnc<T1>()
+        //TODO: make config value
+        private const string db = @"SanchezBowl.db";
+        private string thisName = typeof(T).Name.ToLower();
+        public Task<IEnumerable<T>> GetAllAysnc<T>()
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<T1> GetAsync<T1>(byte id)
+        public Task<T> GetAsync<T>(int id) where T : new()
         {
-            throw new System.NotImplementedException();
+            using (var db = new LiteDatabase(@"SanchezBowl.db"))
+            {
+                var dbObjs = db.GetCollection<T>(thisName);
+                var result = dbObjs.Find(Query.EQ("Id", id))
+                    .Select(x => new T()).ToList();
+                return Task.FromResult(default(T));
+            }
         }
 
-        public Task SaveAsync<T1>(T1 obj)
+        public async Task SaveAsync<T>(T obj)
         {
-            throw new System.NotImplementedException();
+            using (var db = new LiteDatabase(@"SanchezBowl.db"))
+            {
+                var dbObjs = db.GetCollection<T>(thisName);
+                dbObjs.EnsureIndex("Id");
+                var result = await Task.FromResult(dbObjs.Insert(obj));
+            }
         }
     }
 }

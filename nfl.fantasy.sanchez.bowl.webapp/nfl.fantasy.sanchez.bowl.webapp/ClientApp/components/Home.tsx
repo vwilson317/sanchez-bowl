@@ -36,25 +36,26 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
     }
 
     public playerOnClick(playerDetail: IPlayerDetail, e: Event): void {
-        console.log("something was clicked");
-
         //doesn't resolve this is done
         let playerSelected = this.state.selectedPlayer !== null;
         if (playerSelected) {
             var currentId = this.state.selectedPlayer!.teamId;
-            var thisTeam = [this.state.teamOne, this.state.teamTwo].filter(team => team!.id === currentId)[0] as ITeam;
+            var thisTeam = [this.state.teamOne, this.state.teamTwo]
+                .filter(team => team!.id === currentId)[0] as ITeam;
             var roster = thisTeam.roster;
-            this.swapPlayers(roster.starters, playerDetail);
+
+            //we only care about the starts being changes ... this will save if the starters order changes
+            var swappedPlayers = this.swapPlayers(roster.starters, playerDetail);
             this.swapPlayers(roster.bench, playerDetail);
 
-            console.log('roster', thisTeam);
             if (thisTeam.id === this.state.teamOne!.id) {
-                console.log('teamOne after', thisTeam);
-                this.setState({ teamOne: thisTeam as (ITeam), selectedPlayer: null });
-                this.save(thisTeam);
+                this.setState({ teamOne: thisTeam as ITeam, selectedPlayer: null });
 
             } else if (thisTeam.id === this.state.teamTwo!.id) {
-                this.setState({ teamTwo: thisTeam as (ITeam), selectedPlayer: null });
+                this.setState({ teamTwo: thisTeam as ITeam, selectedPlayer: null });
+            }
+            if (swappedPlayers) {
+                this.save(thisTeam);
             }
         }
         else {
@@ -69,7 +70,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: team.id
+            body: JSON.stringify(team)
         }).then(response => response.json() as Promise<boolean>)
             .then(data => {
                 console.log("Save result: ", data);
@@ -77,16 +78,20 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
     }
 
     private swapPlayers(playerDetails: IPlayerDetail[], clickedPlayerDetail: IPlayerDetail) {
+        var swappedPlayers = false;
         for (let i = 0; i < playerDetails.length; i++) {
             var currentPlayer = playerDetails[i];
             var selectedPlayer = this.state.selectedPlayer as IPlayerDetail
             if (currentPlayer.name === selectedPlayer.name && clickedPlayerDetail.positionType === selectedPlayer.positionType) {
                 playerDetails[i] = clickedPlayerDetail;
+                swappedPlayers = true;
             }
             else if (currentPlayer.name === clickedPlayerDetail.name && clickedPlayerDetail.positionType === selectedPlayer.positionType) {
                 playerDetails[i] = selectedPlayer;
+                swappedPlayers = true;
             }
         }
+        return swappedPlayers;
     }
 
     public render() {

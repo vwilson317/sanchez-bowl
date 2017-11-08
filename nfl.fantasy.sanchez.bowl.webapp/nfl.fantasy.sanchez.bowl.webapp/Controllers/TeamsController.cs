@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LiteDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using nfl.fantasy.sanchez.bowl.da;
@@ -29,14 +30,14 @@ namespace nfl.fantasy.sanchez.bowl.webapp.Controllers
             var roster = await _playerDetailsHelper.GetPlayerDetails(team.TeamIdentifier, weekNum);
             team.Roster = roster;
 
-            //await _dataAccess.GetAsync<Team>(team.Id);
+            await _dataAccess.GetAsync<Team>(team.Id);
             return team;
         }
 
         [HttpPost]
-        public async Task<bool> Save([FromBody]byte id)
+        public async Task<bool> Save([FromBody]Team team)
         {
-            //await _dataAccess.SaveAsync(team);
+            await _dataAccess.SaveAsync(team);
             return await Task.FromResult(true);
         }
     }
