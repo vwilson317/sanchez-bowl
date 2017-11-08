@@ -51,14 +51,29 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
             if (thisTeam.id === this.state.teamOne!.id) {
                 console.log('teamOne after', thisTeam);
                 this.setState({ teamOne: thisTeam as (ITeam), selectedPlayer: null });
+                this.save(thisTeam);
 
-            } else if (thisTeam.id === this.state.teamTwo!.id){
+            } else if (thisTeam.id === this.state.teamTwo!.id) {
                 this.setState({ teamTwo: thisTeam as (ITeam), selectedPlayer: null });
             }
         }
         else {
             this.setState({ selectedPlayer: playerDetail });
         }
+    }
+
+    private save(team: ITeam) {
+        fetch('api/teams', {
+            method: 'post',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: team.id
+        }).then(response => response.json() as Promise<boolean>)
+            .then(data => {
+                console.log("Save result: ", data);
+            });
     }
 
     private swapPlayers(playerDetails: IPlayerDetail[], clickedPlayerDetail: IPlayerDetail) {

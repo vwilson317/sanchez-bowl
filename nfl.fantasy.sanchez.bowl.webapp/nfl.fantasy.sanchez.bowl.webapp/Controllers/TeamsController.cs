@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using nfl.fantasy.sanchez.bowl.da;
 using nfl.fantasy.sanchez.bowl.domain;
 
 namespace nfl.fantasy.sanchez.bowl.webapp.Controllers
@@ -9,11 +11,14 @@ namespace nfl.fantasy.sanchez.bowl.webapp.Controllers
     public class TeamsController : Controller
     {
         private readonly IPlayerDetailsHelper _playerDetailsHelper;
+        private readonly IDataAccess<Team> _dataAccess;
         private readonly TeamConfig _teamConfigOptions;
 
-        public TeamsController(IPlayerDetailsHelper playerDetailsHelper, IOptions<TeamConfig> teamConfigAccessor)
+        public TeamsController(IPlayerDetailsHelper playerDetailsHelper, IOptions<TeamConfig> teamConfigAccessor,
+            IDataAccess<Team> dataAccess)
         {
             _playerDetailsHelper = playerDetailsHelper;
+            _dataAccess = dataAccess;
             _teamConfigOptions = teamConfigAccessor.Value;
         }
 
@@ -23,7 +28,16 @@ namespace nfl.fantasy.sanchez.bowl.webapp.Controllers
             var team = new Team(teamIdentifier);
             var roster = await _playerDetailsHelper.GetPlayerDetails(team.TeamIdentifier, weekNum);
             team.Roster = roster;
+
+            //await _dataAccess.GetAsync<Team>(team.Id);
             return team;
+        }
+
+        [HttpPost]
+        public async Task<bool> Save([FromBody]byte id)
+        {
+            //await _dataAccess.SaveAsync(team);
+            return await Task.FromResult(true);
         }
     }
 }

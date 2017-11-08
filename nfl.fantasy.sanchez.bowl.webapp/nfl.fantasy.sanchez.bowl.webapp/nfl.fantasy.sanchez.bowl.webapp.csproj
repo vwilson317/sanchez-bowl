@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\nfl.fantasy.sanchez.bowl.da\nfl.fantasy.sanchez.bowl.da.csproj" />
     <ProjectReference Include="..\nfl.fantasy.sanchez.bowl.domain\nfl.fantasy.sanchez.bowl.domain.csproj" />
   </ItemGroup>
 

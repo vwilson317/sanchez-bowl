@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using nfl.fantasy.sanchez.bowl.domain;
+using nfl.fantasy.sanchez.bowl.da;
 
 namespace nfl.fantasy.sanchez.bowl.webapp
 {
@@ -64,6 +65,9 @@ namespace nfl.fantasy.sanchez.bowl.webapp
         {
             builder.RegisterAssemblyTypes(typeof(domain.AssemblyStarter).Assembly)
                 .AsImplementedInterfaces();
+            builder.RegisterGeneric(typeof(DataAccess<>))
+                .As(typeof(IDataAccess<>))
+                .InstancePerLifetimeScope();
             //builder.RegisterModule(new AutofacModule());
         }
     }
