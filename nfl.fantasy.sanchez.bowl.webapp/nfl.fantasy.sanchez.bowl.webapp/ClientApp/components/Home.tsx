@@ -59,7 +59,9 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
             }
         }
         else {
-            this.setState({ selectedPlayer: playerDetail });
+            if (playerDetail.score === 0) {
+                this.setState({ selectedPlayer: playerDetail });
+            }
         }
     }
 
@@ -138,7 +140,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
         if (this.state.selectedPlayer !== null) {
             var thisPlayerDetail = this.state.selectedPlayer;
             let isSelectable = thisPlayerDetail!.positionType === playerDetail.positionType
-                && thisPlayerDetail!.teamId === playerDetail.teamId;
+                && thisPlayerDetail!.teamId === playerDetail.teamId && playerDetail.score === 0;
             classObj.selectable = isSelectable;
         }
 
