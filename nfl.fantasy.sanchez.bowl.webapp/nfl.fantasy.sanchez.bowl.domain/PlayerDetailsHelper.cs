@@ -11,11 +11,18 @@ namespace nfl.fantasy.sanchez.bowl.domain
             _domHelper = domHelper;
         }
 
-        public async Task<Roster> GetPlayerDetails(TeamIdentifier teamIdentifier, byte week){
-            var teamId = teamIdentifier.GetHashCode();
+        public async Task<Roster> GetRoster(TeamIdentifier teamIdentifier, byte week){
+            var teamId = (byte)teamIdentifier.GetHashCode();
             string url = $"{LeagueUrl}{teamId}{GameCenter}{week}";
-            var playerInfo = await _domHelper.LoadPlayerDetails(url);
-            return playerInfo;
+            var roster = await _domHelper.LoadPlayerDetails(url);
+            SetTeamIds(teamId,roster);
+            return roster;
+        }
+
+        private void SetTeamIds(byte teamId, Roster roster)
+        {
+            roster.Starters.ForEach(s => s.TeamId = teamId);
+            roster.Bench.ForEach(s => s.TeamId = teamId);
         }
     }
 }

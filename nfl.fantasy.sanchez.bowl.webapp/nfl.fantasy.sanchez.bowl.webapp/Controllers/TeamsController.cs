@@ -1,6 +1,5 @@
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using LiteDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using nfl.fantasy.sanchez.bowl.da;
@@ -27,10 +26,23 @@ namespace nfl.fantasy.sanchez.bowl.webapp.Controllers
         public async Task<Team> Week(TeamIdentifier teamIdentifier, byte weekNum)
         {
             var team = new Team(teamIdentifier);
-            var roster = await _playerDetailsHelper.GetPlayerDetails(team.TeamIdentifier, weekNum);
+            var roster = await _playerDetailsHelper.GetRoster(team.TeamIdentifier, weekNum);
             team.Roster = roster;
 
-            await _dataAccess.GetAsync<Team>(team.Id);
+            try
+            {
+                var savedTeam = await _dataAccess.GetAsync(team.Id);
+                if(savedTeam != null)
+                {
+                    savedTeam.Roster.Starters.ForEach(s => s.Score = team.Players.FirstOrDefault(p => p.Name == s.Name)?.Score ?? 0);
+                    savedTeam.Roster.Bench.ForEach(s => s.Score = team.Players.FirstOrDefault(p => p.Name == s.Name)?.Score ?? 0);
+                    return savedTeam;
+                }
+            }
+            catch(System.Exception e)
+            {
+                var something = e;
+            }
             return team;
         }
 

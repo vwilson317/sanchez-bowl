@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace nfl.fantasy.sanchez.bowl.domain
@@ -11,21 +12,21 @@ namespace nfl.fantasy.sanchez.bowl.domain
             TeamIdentifier = teamIdentifier;
         }
 
-        public byte Id => (byte)TeamIdentifier;
+        public int Id => (int)TeamIdentifier;
 
         public string Name => Enum.GetName(typeof(TeamIdentifier), TeamIdentifier);
-        private Roster _roster;
-        public Roster Roster {
-            get => _roster;
-            set
-            {
-                value.Starters.ForEach(s => s.TeamId = (byte)TeamIdentifier);
-                value.Bench.ForEach(s => s.TeamId = (byte)TeamIdentifier);
-                _roster = value;
-            }
-        }
+        public Roster Roster { get; set; }
+
+        public IEnumerable<PlayerDetails> Players => Roster.Starters.Concat(Roster.Bench);
+
         public TeamIdentifier TeamIdentifier { get; set; }
 
         public double TotalScore => Roster.Starters.Sum(p => p.Score);
+
+        //public void SetTeamId()
+        //{
+        //    Roster.Starters.ForEach(s => s.TeamId = (byte)TeamIdentifier);
+        //    Roster.Bench.ForEach(s => s.TeamId = (byte)TeamIdentifier);
+        //}
     }
 }

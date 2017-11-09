@@ -4,6 +4,6 @@ namespace nfl.fantasy.sanchez.bowl.domain
 {
     public interface IPlayerDetailsHelper
     {
-        Task<Roster> GetPlayerDetails(TeamIdentifier teamIdentifier, byte week);
+        Task<Roster> GetRoster(TeamIdentifier teamIdentifier, byte week);
     }
 }

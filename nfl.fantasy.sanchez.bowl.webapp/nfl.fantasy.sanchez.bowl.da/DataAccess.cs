@@ -1,5 +1,6 @@
-﻿using LiteDB;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,42 +11,60 @@ namespace nfl.fantasy.sanchez.bowl.da
         byte Id { get; set; }
     }
 
-    public interface IDataAccess<T> where T : class, new()
+    public interface IDataAccess<T> where T : class
     {
-        Task<T> GetAsync<T>(int id) where T : new();
-        Task<IEnumerable<T>> GetAllAysnc<T>();
-        Task SaveAsync<T>(T obj);
+        Task<T> GetAsync(int id);
+        Task<IEnumerable<T>> GetAllAysnc();
+        Task SaveAsync(T obj);
     }
 
-    public class DataAccess<T> : IDataAccess<T> where T : class, new()
+    public class DataAccess<T> : IDataAccess<T> where T : class
     {
         //TODO: make config value
-        private const string db = @"SanchezBowl.db";
+        private string _file = $"{Directory.GetCurrentDirectory()}\\SanchezBowl-{System.DateTime.Now.Year}-{typeof(T).Name}.txt";
+
         private string thisName = typeof(T).Name.ToLower();
-        public Task<IEnumerable<T>> GetAllAysnc<T>()
+        public async Task<IEnumerable<T>> GetAllAysnc()
         {
-            throw new System.NotImplementedException();
+            return await GetRecords(_file);
         }
 
-        public Task<T> GetAsync<T>(int id) where T : new()
+        public async Task<T> GetAsync(int id)
         {
-            using (var db = new LiteDatabase(@"SanchezBowl.db"))
-            {
-                var dbObjs = db.GetCollection<T>(thisName);
-                var result = dbObjs.Find(Query.EQ("Id", id))
-                    .Select(x => new T()).ToList();
-                return Task.FromResult(default(T));
-            }
+            var recs = await GetRecords(_file);
+            //lastest rec will be append to the file
+
+            return recs.LastOrDefault(x => (int)x.GetType().GetProperty("Id").GetValue(x) == id);
         }
 
-        public async Task SaveAsync<T>(T obj)
+        public async Task SaveAsync(T obj)
         {
-            using (var db = new LiteDatabase(@"SanchezBowl.db"))
+            var recs = await GetRecords(_file);
+            recs = recs.Append(obj);
+            var json = JsonConvert.SerializeObject(recs);
+            await File.WriteAllTextAsync(_file, json);
+        }
+
+        private async Task<IEnumerable<T>> GetRecords(string file)
+        {
+            var recs = Enumerable.Empty<T>();
+            FileStream fileStream;
+            if (!File.Exists(_file))
             {
-                var dbObjs = db.GetCollection<T>(thisName);
-                dbObjs.EnsureIndex("Id");
-                var result = await Task.FromResult(dbObjs.Insert(obj));
+                fileStream = File.Create(_file);
             }
+            else
+            {
+                using (var sr = new StreamReader(File.OpenRead(_file)))
+                {
+                    var text = await File.ReadAllTextAsync(_file);
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        recs = JsonConvert.DeserializeObject<IEnumerable<T>>(text);
+                    }
+                }
+            }
+            return recs;
         }
     }
 }
