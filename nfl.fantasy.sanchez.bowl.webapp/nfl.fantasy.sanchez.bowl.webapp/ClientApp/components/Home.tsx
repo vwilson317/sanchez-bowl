@@ -21,11 +21,12 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
         let parsedParams = queryStr.parse(props.location.search);
         if (parsedParams.teams !== undefined) {
             let teamIds = parsedParams.teams.split(",");
-            fetch('api/teams/' + teamIds[0] + '/week/9')
+            let weekId = parsedParams.week;
+            fetch('api/teams/' + teamIds[0] + '/week/' + weekId)
                 .then(response => response.json() as Promise<ITeam>)
                 .then(data => {
                     teams.push(data);
-                    fetch('api/teams/' + teamIds[1] + '/week/9')
+                    fetch('api/teams/' + teamIds[1] + '/week/' + weekId)
                         .then(response => response.json() as Promise<ITeam>)
                         .then(data => {
                             teams.push(data);
@@ -36,31 +37,31 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
     }
 
     public playerOnClick(playerDetail: IPlayerDetail, e: Event): void {
-        //doesn't resolve this is done
-        let playerSelected = this.state.selectedPlayer !== null;
-        if (playerSelected) {
-            var currentId = this.state.selectedPlayer!.teamId;
-            var thisTeam = [this.state.teamOne, this.state.teamTwo]
-                .filter(team => team!.id === currentId)[0] as ITeam;
-            var roster = thisTeam.roster;
+        if (playerDetail.score === 0) {
+            let playerSelected = this.state.selectedPlayer !== null;
+            if (playerSelected) {
+                var currentId = this.state.selectedPlayer!.teamId;
+                var thisTeam = [this.state.teamOne, this.state.teamTwo]
+                    .filter(team => team!.id === currentId)[0] as ITeam;
+                var roster = thisTeam.roster;
 
-            //we only care about the starts being changes ... this will save if the starters order changes
-            var swappedPlayers = this.swapPlayers(roster.starters, playerDetail);
-            this.swapPlayers(roster.bench, playerDetail);
+                //we only care about the starts being changes ... this will save if the starters order changes
+                var swappedPlayers = this.swapPlayers(roster.starters, playerDetail);
+                this.swapPlayers(roster.bench, playerDetail);
 
-            if (thisTeam.id === this.state.teamOne!.id) {
-                this.setState({ teamOne: thisTeam as ITeam, selectedPlayer: null });
+                if (thisTeam.id === this.state.teamOne!.id) {
+                    this.setState({ teamOne: thisTeam as ITeam, selectedPlayer: null });
 
-            } else if (thisTeam.id === this.state.teamTwo!.id) {
-                this.setState({ teamTwo: thisTeam as ITeam, selectedPlayer: null });
-            }
-            if (swappedPlayers) {
-                this.save(thisTeam);
-            }
-        }
-        else {
-            if (playerDetail.score === 0) {
-                this.setState({ selectedPlayer: playerDetail });
+                } else if (thisTeam.id === this.state.teamTwo!.id) {
+                    this.setState({ teamTwo: thisTeam as ITeam, selectedPlayer: null });
+                }
+                if (swappedPlayers) {
+                    this.save(thisTeam);
+                }
+            } else {
+                if (playerDetail.score === 0) {
+                    this.setState({ selectedPlayer: playerDetail });
+                }
             }
         }
     }
@@ -83,7 +84,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
         var swappedPlayers = false;
         for (let i = 0; i < playerDetails.length; i++) {
             var currentPlayer = playerDetails[i];
-            var selectedPlayer = this.state.selectedPlayer as IPlayerDetail
+            var selectedPlayer = this.state.selectedPlayer as IPlayerDetail;
             if (currentPlayer.name === selectedPlayer.name && clickedPlayerDetail.positionType === selectedPlayer.positionType) {
                 playerDetails[i] = clickedPlayerDetail;
                 swappedPlayers = true;
@@ -130,7 +131,7 @@ export class Home extends React.Component<RouteComponentProps<{}>, IHomeState> {
                     </div>
                 )
             }
-        </div>
+        </div>;
 
         return startersList;
     }
